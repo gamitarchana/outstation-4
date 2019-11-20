@@ -1,0 +1,13 @@
+{% load filters %}
+
+<div>
+  {% include 'common/image_carousel.html' with images=place.place_images.all id=place.id %}
+  <div class="route-location-detail block-container">
+    <!--h6 class="upper bold padding-top-bottom-10">{{place.name}}</h6-->
+    <h2 class="bold padding-top-bottom-10">{{place.name}}</h2>
+    <div class="location-detail-1">{{place.details}}</div>
+    {% if place.duration_of_visit %}
+    <div class="padding-top-bottom-30">{{place.duration_of_visit|formattime}}</div>
+    {% endif %}
+  </div>
+</div>

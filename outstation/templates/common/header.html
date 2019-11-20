@@ -1,0 +1,27 @@
+{% load static %}
+{% block content %}
+<header>
+  <nav class="navigationbar" id="nav-menu">
+    <div id="menu-container">
+    <a href="#"><img class="logo" src="{% static 'images/Meru-logo.svg' %}"></a>
+    <!--a class="upper login-button" href="#" >Login</a-->
+    <a class="menuitem" href="https://www.meru.in/drive-with-us">Drive with us</a>
+    <a class="menuitem" href="https://www.meru.in/booking-modes">Meru App</a>
+    <a class="menuitem" href="https://www.meru.in/corporate">Meru for business</a>
+    <a href="javascript:void(0);" class="menu-icon" onclick="openMenu()">
+      <i class="fa fa-bars"></i>
+    </a>
+    <div>
+  </nav>
+</header>
+<script>
+function openMenu() {
+  var topMenu = document.getElementById("nav-menu");
+  if (topMenu.className === "navigationbar") {
+    topMenu.className += " menu-responsive";
+  } else {
+    topMenu.className = "navigationbar";
+  }
+}
+</script>
+{% endblock %}

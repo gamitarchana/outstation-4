@@ -1,0 +1,17 @@
+{% load static %}
+
+{% load filters responsive_image %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+{% include 'map/tree_icon.html' %}
+
+<div id="routeMap" class="route-map">
+
+{% include 'map/map_start_block.html' with origin=origin %}
+{% include 'map/dynamic_route_map.html' with placeList=placeList %}
+{% include 'map/map_end_block.html' with destination=destination total_distance=total_distance %}
+</div>
+{% endblock%}

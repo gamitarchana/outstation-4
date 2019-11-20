@@ -1,0 +1,76 @@
+{% load static %}
+
+{% load filters %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<div id="dynamicRouteMap">
+  {% for place in placeList %}
+    {% with forloop.counter|mod:5 as blockNum %}
+      <div id="mapBlock-{{place.place.id}}" class = "{% if not is_customized_map %} show {% elif is_customized_map and filtered_places|dicValue:place.place.id == place.place.name %}show
+      {% else %} hide {% endif %}" >
+        {% if blockNum == 0 %}
+          {% if place.place.map_icon %}
+            {% include 'map/image_icon_block/map_image_icon_block_5.html' with location=place %}
+          {% else %}
+            {% include 'map/image_block/map_image_block_5.html' with location=place %}
+          {% endif %}
+        {% else %}
+          {% with template_name=blockNum|stringformat:"s"|add:".html" %}
+            {% if place.place.map_icon %}
+              {% include 'map/image_icon_block/map_image_icon_block_'|add:template_name with location=place %}
+            {% else %}
+              {% include 'map/image_block/map_image_block_'|add:template_name with location=place %}
+            {% endif %}
+          {% endwith %}
+        {% endif %}
+      </div>
+    <!--div id="mapBlock-{{place_on_route.id}}" class="{% if blockNum == 0 %}map-block-5{% else %}map-block-{{blockNum}}{% endif %} map-block " style="position:relative" >
+      <div class="{% if forloop.counter|divisibleby:2 %}map-info-left-container{% else %}map-info-right-container{% endif %}">
+      {% with place_on_route.place_images.all|item:"0" as place_image %}
+        {% image place_image.image fill-200x200 as img %}
+          <img class="map-image" src ="{{img.url}}" alt="">
+      {% endwith %}
+      <div id="mapInfo" class="{% if forloop.counter|divisibleby:2 %}map-info-left{% else %}map-info-right{% endif %}">
+      <div class="tooltip">
+        <div class="map-label upper">{{place_on_route.name}}</div>
+        <span class="tooltiptext" >{{place_on_route.name}}</span>
+      </div>
+      <div >
+        <div class="map-distance">{{place.distance_from_origin}}</div>
+        <div style="font-size:14px; font-weight:bold;">km</div>
+      </div>
+      </div>
+      </div>
+      <div class="{% if forloop.counter|divisibleby:2 %}map-place-icon-left{% else %}map-place-icon-right{% endif %}">
+      {% image place_on_route.map_icon max-200x200 as map_icon %}
+          <img  src ="{{map_icon.url}}" alt="" class="map-icon-small">
+
+      </div>
+      <div class="{% if forloop.counter|divisibleby:2 %}map-amenities-right-container{% else %}map-amenities-left-container{% endif %}">
+        {% for location_amenity in place.amenities %}
+          <div id="amenitiesContainer">
+            {% if location_amenity.value.amenity_type == amenities.lodging.value %}
+            <div class="padding-top-bottom-30 inline-block tooltip">
+              <i class='fa fa-bed map-amenities-icon'></i>
+              <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+            </div>
+            {% endif %}
+            {% if location_amenity.value.amenity_type == amenities.eating_place.value %}
+            <div><div class="block-container tooltip">
+              <i class='fa fa-utensils map-amenities-icon'></i>
+              <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+            </div></div>{% endif %}
+            {% if location_amenity.value.amenity_type == amenities.petrol_pump.value %}
+            <div><div class="block-container tooltip">
+              <i class='fa fa-gas-pump map-amenities-icon'></i>
+              <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+            </div></div>
+          {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      </div-->
+      {% endwith %}
+  {% endfor %}
+</div>

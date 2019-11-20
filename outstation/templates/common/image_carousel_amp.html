@@ -1,0 +1,25 @@
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<amp-carousel id="custom-button"
+  width="320"
+  height="180"
+  layout="responsive"
+  type="slides"
+  autoplay
+  delay="5000">
+  {% for img in images.all %}
+    {% image img.image fill-320x180 as img1 %}
+    {% image img.image fill-440x250 as img2 %}
+    {% image img.image fill-700x394 as img3 %}
+      <amp-img
+          src="{{img3.url}}"
+          width="700"
+          height="394"
+          layout="responsive"
+          alt="{{img3.alt}}">
+      </amp-img>
+  {% endfor %}
+</amp-carousel>
+{% endblock %}

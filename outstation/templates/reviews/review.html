@@ -1,0 +1,42 @@
+{% load static %}
+{% block content %}
+
+<form id="reviewForm" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  <div id="title" class="margin-top-bottom-10">
+    <label class="review-form-label">Title: </label>
+    <input type="text" name="reviewTitle" id="reviewTitle" class="review-form-field"></input>
+    <div id="titleError" class ="form-error hide"></div>
+  </div>
+  <div id="comments" class="margin-top-bottom-10">
+    <label class="review-form-label">Comments:</label>
+    <textarea id="reviewComments" name="reviewComments" rows="4" cols="30" class="review-form-field"></textarea>
+    <div id="commentsError" class ="form-error hide"></div>
+  </div>
+  <div id="rating" class="margin-top-bottom-10">
+    <label class="review-form-label">Rating: </label>
+    <!--input id="reviewRating" name="reviewRating" type="number" class="review-form-field" min="0" max="5" required></input-->
+    {% include 'common/rating_input.html' %}
+    <div id="ratingError" class ="form-error hide"></div>
+  </div>
+
+  <div class="margin-top-bottom-10"><label> Upload Images:</label></div>
+  <div> Click here or drag and drop images to upload. (<i style="font-size:14px;">Maximum 10 image files allowed to be uploaded</i>)</div>
+  <div id="reviewImagesDropzone" class="file-dropzone background-gray margin-top-bottom-10"></div>
+  <div id="imageError" class ="form-error hide"><span id="imageUploadError"></span></div>
+  <div class="margin-top-bottom-10"><label>Upload Videos:</label></div>
+  <div> Click here or drag and drop videos to upload. (<i style="font-size:14px;">Maximum 2 video files allowed to be uploaded</i>)</div>
+  <div id="reviewVideosDropzone" class="file-dropzone background-gray"></div>
+  <div id="videoError" class ="form-error hide"><span id="videoUploadError"></span></div>
+  <div id="formError" class ="form-error hide margin-top-bottom-10"><span id="reviewFormError"></span></div>
+  <div class="review-form-button-container row-container-even-space margin-top-bottom-10">
+    <button id="submitButton" class="background-yellow review-form-button" type="submit">Submit</button>
+    <button id="cancelButton" class="background-yellow review-form-button" type="reset">Cancel</button>
+  </div>
+</form>
+<div class="modal fade" id="spinnerModal" role="dialog">
+    <div class="modal-dialog spinner-dialog">
+      <i class="fa fa-spinner fa-spin spinner"></i>
+    </div>
+</div>
+{% endblock%}

@@ -1,0 +1,23 @@
+{% load static %}
+
+{% block content %}
+
+<div class="row-container map-info-container {% if not isRightAlign %}row-reverse{% endif %}">
+  <div >
+    <div class="map-distance">{{location.distance_from_origin|floatformat}} km</div>
+  </div>
+  <div class="map-info">
+    <div class="tooltip">
+      <div class="map-label-small upper {% if not isRightAlign %}right-align{% endif %}">{{location.place.name}}</div>
+      <span class="tooltiptext {% if isRightAlign %}right{% endif %}" style="bottom:20px">{{location.place.name}}</span>
+    </div>
+    {% if location.detour_distance > 0 %}
+    <div class="tooltip">
+      <div class="map-detour-info {% if not isRightAlign %}right-align{% endif %}">{{location.detour_distance|floatformat}} km {% if location.detour %} via {{location.detour}} {% endif %}</div>
+      <span class="tooltiptext {% if isRightAlign %}right{% endif %}" >{{location.detour_distance|floatformat}} km {% if location.detour %} via {{location.detour}} {% endif %}</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

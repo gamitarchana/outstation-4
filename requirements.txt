@@ -1,0 +1,10 @@
+wagtail==2.4
+social-auth-app-django
+django-favicon
+wagtail-metadata
+wagtail-robots
+wagtail-schema.org
+wagalytics
+django-antispam
+django-qartez
+django-storages[azure]

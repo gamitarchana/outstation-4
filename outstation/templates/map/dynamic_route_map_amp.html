@@ -1,0 +1,29 @@
+{% load static %}
+
+{% load filters responsive_image %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<div id="dynamicRouteMap">
+  {% for place in placeList %}
+    {% with forloop.counter|mod:5 as blockNum %}
+      <div id="mapBlock-{{place.place.id}}" >
+        {% if blockNum == 0 %}
+          {% if place.place.map_icon %}
+            {% include 'map/image_icon_block/map_image_icon_block_5_amp.html' with location=place %}
+          {% else %}
+            {% include 'map/image_block/map_image_block_5_amp.html' with location=place %}
+          {% endif %}
+        {% else %}
+          {% with template_name=blockNum|stringformat:"s"|add:"_amp.html" %}
+            {% if place.place.map_icon %}
+              {% include 'map/image_icon_block/map_image_icon_block_'|add:template_name with location=place %}
+            {% else %}
+              {% include 'map/image_block/map_image_block_'|add:template_name with location=place %}
+            {% endif %}
+          {% endwith %}
+        {% endif %}
+      </div>
+    {% endwith %}
+  {% endfor %}
+</div>

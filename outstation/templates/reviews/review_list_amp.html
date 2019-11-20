@@ -1,0 +1,36 @@
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailimages_tags %}
+{% block content %}
+<amp-carousel height="1000" width="700" id="reviewCarousel"
+  layout="responsive"
+  type="slides">
+    {% for review in reviews %}
+      <div>
+        <div class="column-container-center-align">
+          <div>
+            <amp-img layout="fixed"
+              width= "80"
+              height="80"
+              src="{{review.user_profile.profile_photo.url}}" class="profile-image">
+            </amp-img>
+          </div>
+          <div class="margin-top-bottom-10">
+            {% include 'common/rating.html' with rating=review.rating range='5' %}
+          </div>
+          <div class="block-container">
+            <span>{{review.user_profile.user.first_name}} {{review.user_profile.user.last_name}}</span> |
+            <span>{{ review.publish_date|timesince }} ago</span>
+          </div>
+      </div>
+      {% if review.review_image.all|length > 0 %}
+        {% include 'common/image_carousel_amp.html' with images=review.review_image.all  id=review.id %}
+      {% endif %}
+      <div class="block-container">
+        <div class="bold-18">{{review.title}}</div>
+        <div class="padding-top-10">{{review.review_comments}}</div>
+      </div>
+  </div>
+  {% endfor %}
+</amp-carousel>
+{% endblock %}

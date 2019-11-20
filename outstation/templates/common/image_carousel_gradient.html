@@ -1,0 +1,27 @@
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+<div id="imageCarouselGradient-{{id}}" class="margin-top-bottom-30" style="position:relative;">
+  {% for img in images.all %}
+    {% image img.image fill-320x180 as img1 %}
+    {% image img.image fill-440x250 as img2 %}
+    {% image img.image fill-600x337 as img3 %}
+    <div id="slide-{{id}}-{{forloop.counter}}"  class="carousel-image {% if forloop.counter == 1 %} carousel-slide-active {% else %} hide {% endif %}">
+      <picture class="lazy">
+        <source media="(min-width: 320px) and (max-width: 767px)" data-srcset="{{img1.url}}">
+        <source media="(min-width: 768px) and (max-width: 1099px)" data-srcset="{{img2.url}}">
+        <source media="(min-width: 1100px)" data-srcset="{{img3.url}}">
+        <img class="lazy" data-src="{{img1.url}}" class="d-block w-100" alt="">
+      </picture>
+    </div>
+  {% endfor %}
+  <div class="{% if images|length == 0 %}hide {% else %}show{% endif %}">
+    <button class="carousel-button carousel-prev" href="imageCarouselGradient-{{id}}"><i style="font-size:24px; color:#fff; font-weight:bold;" class="fa fa-angle-left"></i></button>
+    <button class="carousel-button carousel-next" href="imageCarouselGradient-{{id}}"><i style="font-size:24px; color:#fff; font-weight:bold;" class="fa fa-angle-right"></i></button>
+  </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/image_carousel_gradient.js' %}" async ></script>
+{% endblock %}

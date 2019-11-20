@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load filters %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% load wagtailschemaorg_tags %}
+
+{% block extra_css %}
+
+{% endblock extra_css %}
+{% block content %}
+<div class="main-body">
+  <div class="form-body">
+    {% if self.excerpt %}
+      {% with booking_form_url|add:"?"|add:self.excerpt as booking_url %}
+        {% include 'booking_form.html' with url=booking_url %}
+      {% endwith %}
+    {% else %}
+      {% include 'booking_form.html' with url=booking_form_url %}
+    {% endif %}
+  </div>
+  <div class="outstation-route-container">
+    {% image self.banner_image fill-900x400 as banner_image %}
+    <div class="location-banner" style="background-image:url('{{banner_image.url}}'); background-size:cover;">
+      <div id="bannerInfo" class="row-container-even-space width-100percent">
+        <div style="width:240px;" >{{self.banner_title|richtext}}</div>
+      </div>
+    </div>
+    <div class="panel-header background-yellow black ">
+      <div class="header row-container-even-space width-100percent bottom-align">
+        <div class="width-50percent">
+          <h2>{{self.total_distance|floatformat}} km</h2>
+          <div class="tooltip">
+            <div class="tooltip-label">{{self.highway}}</div>
+            <span class="tooltiptext">{{self.highway}}</span>
+          </div>
+        </div>
+        <div class="padding-top-10 right-align">
+          {% include 'common/rating.html' with rating=self.road_condition_rating range='5' %}
+          <div>Road Condition </div>
+        </div>
+      </div>
+    </div>
+
+    <div  style="margin:30px 0px;">
+      <div id="filterPanel" class="hide">
+      <div class="row-container-even-space">
+        <div>Choose type of trip(Optional)</div>
+        <button id="selectAllButton" class="select-edit-button upper ">Select All</button>
+        <button id="editButton" class="select-edit-button upper hide">Edit</button>
+      </div>
+      <div id="filterView" class="filter-view">
+        <div id="placeFilter" class="row-container-wrap tags-container">
+          {% for tag in location_tags %}
+            <button class="tag-button-up" data-id='{{tag.id}}' data-tag="{{tag.tag}}">{{tag.tag}}</button>
+          {% endfor %}
+        </div>
+        <div id="tripTypeFilter" class="row-container-wrap padding-top-bottom-30">
+          {% for trip_type in trip_types %}
+            <button class="tripType-button-up" data-id='{{trip_type.id}}' data-trip-type="{{trip_type.trip_type}}">{{trip_type.trip_type}}</button>
+          {% endfor %}
+        </div>
+      </div>
+      </div>
+      <div id="selectedFilterView"></div>
+      <div class="show-route-button-container"><button id="routeMapButton" class="show-route-button upper">Customize my route map</button></div>
+    </div>
+    <div id="route">
+    <div id="routeDynamicMap">
+      {% include 'map/map.html' with origin=self.origin destination=self.destination total_distance=self.total_distance placeList=self.on_route_places.all %}
+    </div>
+      <!--form id="shareMapForm"-->
+        <!--{% csrf_token %}-->
+        <div style="width: 150px; margin:30px auto 70px auto;">
+          <button id="shareMap" class="upper mapshare-button" data-toggle="modal" data-target="#shareMapModalPopup"><i class="fa fa-share-alt">Share Map</i></button>
+        </div>
+      <!--/form-->
+      <div>
+        {% include 'common/image_carousel.html' with images=self.origin.place_images.all id=self.origin.id %}
+        <div class="block-container">
+          {% if self.origin_display_name != None %}
+            {{self.origin_display_name|richtext}}
+          {% else %}
+            <h2 class="upper bold padding-top-bottom-10">{{self.origin.name}}</h2>
+          {% endif %}
+          <div >{{ self.origin.details}} </div>
+        </div>
+      </div>
+      <div>
+        {% include 'common/image_carousel.html' with images=self.destination.place_images.all id=self.destination.id %}
+        <div class="block-container">
+          {% if self.destination_display_name != None %}
+            {{self.destination_display_name|richtext}}
+          {% else %}
+            <h2 class="upper bold padding-top-bottom-10">{{self.destination.name}}</h2>
+          {% endif %}
+          <div>{{self.destination.details}} </div>
+        </div>
+      </div>
+      <div>
+        {% include 'fare_table/fare_table.html' with fares_table=fare_table total_distance=self.total_distance %}
+      </div>
+      {% if self.on_route_places.all|length > 0 %}
+        <div class="panel-header panel-border background-light-gray dark-blue">
+          <div class="width-100percent header"><h4 class="upper">Places to see on route</h4></div>
+        </div>
+        <div id="placesOnRoute">
+          {% for place in self.on_route_places.all %}
+            {% with place.place as tourist_place %}
+              <div id="placeOnRoute-{{tourist_place.id}}" class="show" data-id="{{tourist_place.id}}" data-name="{{tourist_place.name}}" data-location-tags='{{tourist_place.location_tags.all|JSON}}' data-trip-types='{{tourist_place.trip_types.all|JSON}}' >
+                {% include 'route/place_detail.html' with place=tourist_place %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if self.destination_places.all|length > 0 %}
+        <div class="panel-header panel-border background-light-gray dark-blue ">
+          <div class="width-100percent header"><h4 class="upper">Places to see in {{self.destination}}</h4>
+          </div>
+        </div>
+        <div id="placesInDestination">
+          {% for place in self.destination_places.all %}
+            {% with place.place as tourist_place %}
+              <div id="placeInDestination-{{tourist_place.id}}" class="show">
+                {% include 'route/place_detail.html' with place=tourist_place %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+<!------------------->
+    <div class="backgorund-light-gray">
+      {% for information in self.route_information.all %}
+        <div class="block-container">
+          <div class="padding-top-10">{{information.information|richtext}}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div id="socialMedia" class="row-container-space-around social-media-container">
+      <div>
+        <span id="likes_count">{{self.total_likes}}</span>
+        {% if user.is_authenticated %}
+          <form id="like_button_form" class="inline-block">
+            {% csrf_token %}
+            <button id='like_button' type='submit' name='routepage_id' value="{{self.id}}" class="social-media-button"><i class="fa fa-thumbs-up"></i></button>
+          </form>
+        {% else %}
+          <button id='like_login_button' class="social-media-button" data-toggle="modal" data-target="#loginModalPopup"><i class="fa fa-thumbs-up"></i></button>
+        {% endif %}
+      </div>
+      <div>
+        <span></span>
+        <button class="social-media-button" data-toggle="modal" data-target="#shareLinkModalPopup" ><i class="fa fa-share-alt"></i></button>
+      </div>
+    </div>
+    <div id="reviewPanel">
+      <div class="panel-header panel-border backgorund-light-gray">
+        <div class="header dark-blue">
+          <h3 class="upper">Reviews</h3>
+          <div id="reviews_count">{{self.total_reviews}}</div>
+        </div>
+      </div>
+      <div class="review-content padding-top-bottom-30">
+        <div id="reviewListPanel">
+          <div id="reviewList">
+            {% include 'reviews/review_list.html' with reviews=self.reviews_list  %}
+          </div>
+          <div class="review-button-container">
+            {% if user.is_authenticated %}
+              <button type="button" id="writeReviewButton" class="background-yellow review-button">Write a review</button>
+            {% else %}
+              <button type="button" id="writeReviewLogin" class="background-yellow review-button" data-toggle="modal" data-target="#loginModalPopup">Write a review</button>
+            {% endif %}
+          </div>
+        </div>
+        <div id="writeReviewPanel" class="block-container hide">
+          {% include 'reviews/review.html' with route_id=self.id %}
+        </div>
+      </div>
+    </div>
+    {% if popular_routes %}
+      {% include 'common/popular_routes.html' %}
+    {% endif %}
+  <!-- The Modal -->
+    <div class="modal" id="loginModalPopup">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Login</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="google-login">
+            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{request.path}}" class="fab fa-google ">
+              <button type="button" name="button" class="btn google-btn">Continue with Google</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="modal" id="shareLinkModalPopup">
+    <div class="modal-dialog share-link-pop-up">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div style="margin-bottom:20px;">Share</div>
+          <div data-network="twitter" class="st-custom-button"><i class='fab fa-twitter-square' style='font-size:28px'></i>Twitter</div>
+          <div data-network="facebook" class="st-custom-button"><i class="fab fa-facebook-square" style="font-size:28px"></i>Facebook</div>
+          <div data-network="whatsapp" class="st-custom-button"><i class='fab fa-whatsapp-square' style='font-size:28px'></i>Whatsapp</div>
+          <div data-network="email" class="st-custom-button"><i class="fas fa-envelope" style="font-size:28px"></i>Email</div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="modal" id="shareMapModalPopup">
+    <div class="modal-dialog share-link-pop-up">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div style="margin-bottom:20px;">Share</div>
+          <div style="padding: 5px 10px; cursor: pointer;"><i class='fab fa-twitter-square' style='font-size:28px'></i>Twitter</div>
+          <div id="fbShareMap" style="padding: 5px 10px; cursor: pointer;"><i class="fab fa-facebook-square" style="font-size:28px"></i>Facebook</div>
+          <div style="padding: 5px 10px;
+          cursor: pointer;"><i class='fab fa-whatsapp-square' style='font-size:28px'></i>Whatsapp</div>
+          <div id="pinShareMap" style="padding: 5px 10px;
+          cursor: pointer;"><i class="fab fa-pinterest-square" style="font-size:28px"></i>Pinterest</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+</div>
+{{ self.id|dic:"route_id"|json_script:"routeId" }}
+{% with 'js/reviews.js'|static_url as review_url %}
+  {{ review_url|dic:"review_url"|json_script:"reviewUrl" }}
+{% endwith %}
+
+  <script type="text/javascript" src="{% static 'js/dropzone.min.js' %}" defer ></script>
+  <script type="text/javascript" src="{% static 'js/outstationroute.js' %}" defer></script>
+  <script src="//platform-api.sharethis.com/js/sharethis.js#property=5cd5790482578900124cc422&product=inline-share-buttons" async></script>
+{% endblock%}

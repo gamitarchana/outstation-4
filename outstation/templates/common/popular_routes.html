@@ -1,0 +1,13 @@
+<div id="popularRoutes" class="block-container backgorund-light-gray">
+  <h4 class="upper margin-bottom-30">More Popular Routes</h4>
+  <div id="routesPanel" class=" row-container-even-space">
+  {% for popular_route in popular_routes %}
+    <div id="regionRoutes" class="margin-bottom-30">
+      <h5 class="padding-top-bottom-10">{{popular_route.region}}</h5>
+        {% for route in popular_route.region_routes.all %}
+          <div class="width-100percent"><a href="{{route.url}}">{{route.name}}</a></div>
+        {% endfor %}
+    </div>
+  {% endfor %}
+  </div>
+</div>

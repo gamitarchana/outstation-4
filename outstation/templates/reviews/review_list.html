@@ -1,0 +1,41 @@
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailimages_tags %}
+{% block content %}
+<div id="reviewCarousel-{{review.id}}" class="carousel slide" data-ride="carousel" data-interval="false">
+  <div class="carousel-inner">
+    {% for review in reviews %}
+      <div class="carousel-item {% if forloop.counter == 1 %} active {% endif %}">
+        <div class="column-container-center-align">
+          <div><img src="{{review.user_profile.profile_photo.url}}" class="profile-image"></div>
+          <div class="margin-top-bottom-10">
+            {% include 'common/rating.html' with rating=review.rating range='5' %}
+          </div>
+          <div class="block-container">
+            <span>{{review.user_profile.user.first_name}} {{review.user_profile.user.last_name}}</span> |
+            <span>{{ review.publish_date|timesince }} ago</span>
+          </div>
+      </div>
+
+      {% include 'common/image_carousel_gradient.html' with images=review.review_image.all  id=review.id %}
+      <div class="block-container">
+      <div class="bold-18">{{review.title}}</div>
+      <div class="padding-top-10">{{review.review_comments}}</div>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+  <div class="{% if reviews|length == 0 %}hide {% else %}show{% endif %}">
+  <a class="carousel-control-prev carousel-control" href="#reviewCarousel-{{review.id}}" role="button" data-slide="prev">
+    <span><i style="font-size:24px; color:#000; font-weight:bold;" class="fa fa-angle-left"></i></span>
+    <span class="sr-only" style="backgrond-color:#000">Previous</span>
+  </a>
+  <a class="carousel-control-next carousel-control" href="#reviewCarousel-{{review.id}}" role="button" data-slide="next">
+    <span><i style="font-size:24px; color:#000; font-weight:bold;" class="fa fa-angle-right"></i></span>
+    <span class="sr-only">Next</span>
+  </a>
+  </div>
+  </div>
+
+{% endblock %}

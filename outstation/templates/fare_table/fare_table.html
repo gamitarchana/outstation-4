@@ -1,0 +1,51 @@
+{% load static %}
+{% block content %}
+<div class="fare-table">
+  <div class="background-gray">
+  <table class="table">
+    <tbody>
+      {% for fare in fares_table|slice:"5" %}
+        {% include 'fare_table/fare_row.html' with fare=fare %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if fares_table|length > 5 %}
+    <div id="showMoreBtn" class="show-more-less">View all options</div>
+    <table id="extraFares" class="table hide">
+      <tbody>
+        {% for fare in fares_table|slice:"5:" %}
+          {% include 'fare_table/fare_row.html' with fare=fare %}
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+  <div id="showLessBtn" class="show-more-less hide">Show less</div>
+</div>
+  {% if fares_table|length > 0 %}
+    <div style="font-size:14px;"><sup>*</sup>Terms and Conditions apply.</div>
+  {% endif %}
+</div>
+<script type="text/javascript">
+  (function(){
+      let showMoreBtn = document.getElementById('showMoreBtn');
+      let extraFares = document.getElementById('extraFares');
+      let showLessBtn = document.getElementById('showLessBtn');
+
+      if( showMoreBtn != null) {
+        showMoreBtn.addEventListener("click", function(e){
+          extraFares.classList.remove('hide');
+          showMoreBtn.classList.add('hide');
+          showLessBtn.classList.remove('hide');
+        });
+      }
+
+      if( showLessBtn != null) {
+        showLessBtn.addEventListener("click", function(e){
+          extraFares.classList.add('hide');
+          showMoreBtn.classList.remove('hide');
+          showLessBtn.classList.add('hide');
+        });
+      }
+    }())
+</script>
+{% endblock %}

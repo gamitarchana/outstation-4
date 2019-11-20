@@ -1,0 +1,14 @@
+{% load static %}
+{% block content %}
+
+{% with ''|center:range as rating_range %}
+  {% for i in rating_range %}
+    {% if forloop.counter <= rating %}
+      <div class="triangle"></div>
+    {% else %}
+      <div class="triangle"><div class="empty"></div></div>
+    {% endif %}
+  {% endfor %}
+{% endwith %}
+
+{% endblock %}

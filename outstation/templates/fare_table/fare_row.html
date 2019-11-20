@@ -1,0 +1,20 @@
+{% load static %}
+<tr>
+  <td>
+    <div class="bold">{{fare.vehicle_type}}</div>
+    <div style="margin: 5px 0px;">
+      {% if fare.vehicle_type|upper == vehicle_types.hatchback.value|upper %}
+        <img src="{% static 'images/Hutchback.svg' %}" alt="{{vehicle_types.hatchback.value}} - {{fare.model}}">
+      {% elif fare.vehicle_type|upper == vehicle_types.sedan.value|upper or fare.vehicle_type|upper ==  vehicle_types.sedan_premium.value|upper or fare.vehicle_type|upper == vehicle_types.sedan_business.value|upper %}
+        <img src="{% static 'images/Sedan.svg' %}" alt="{{vehicle_types.sedan.value}} - {{fare.model}}">
+      {% elif fare.vehicle_type|upper == vehicle_types.suv.value|upper %}
+        <img src="{% static 'images/SUV.svg' %}" alt="{{vehicle_types.suv.value}} - {{fare.model}}">
+      {% elif fare.vehicle_type|upper == vehicle_types.minibus.value|upper %}
+        <img src="{% static 'images/Minibus.svg' %}" alt="{{vehicle_types.minibus.value}} - {{fare.model}}">
+      {% endif %}
+    </div>
+    <div>{{fare.model}}</div>
+  </td>
+  <td><div>{{fare.seater}} Seater | {{fare.vehicle_feature}}</div>
+  <div>&#8377 {{fare.per_km_rate}}<sup>*</sup> per km </div></td>
+</tr>

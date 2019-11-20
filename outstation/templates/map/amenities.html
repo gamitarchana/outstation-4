@@ -1,0 +1,21 @@
+{% load static %}
+{% block content %}
+  {% if amenity.value.amenity_type == amenities.lodging.value %}
+  <div class="tooltip" style="text-align:center">
+    <i class='fa fa-bed map-amenities-icon'></i>
+    <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+  </div>
+  {% endif %}
+  {% if amenity.value.amenity_type == amenities.eating_place.value %}
+  <div class="tooltip" style="text-align:center">
+    <i class='fa fa-utensils map-amenities-icon'></i>
+    <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+  </div>{% endif %}
+  {% if amenity.value.amenity_type == amenities.petrol_pump.value %}
+  <div class="tooltip" style="text-align:center">
+    <i class='fa fa-gas-pump map-amenities-icon'></i>
+    <span class="tooltiptext" >{{location_amenity.value.location}}</span>
+  </div>
+{% endif %}
+
+{% endblock %}

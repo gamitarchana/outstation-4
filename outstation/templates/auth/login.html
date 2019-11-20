@@ -1,0 +1,21 @@
+
+{% load static %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+
+{% if request.user.is_authenticated %}
+<h2>logged in</h2>
+{% else %}
+<a href="{% url 'social:begin' 'google-oauth2' %}?next={{request.path}}">
+  <button type="button" name="button" class="btn btn-primary">Gmail</button>
+</a>
+{% endif %}
+{{request.user.is_authenticated}}
+
+{{backends.associated}}
+{{user.is_authenticated}}
+<p>Hello {{ user.username }}!</p>
+{% endblock%}
